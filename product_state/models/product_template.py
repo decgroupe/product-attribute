@@ -6,7 +6,6 @@ from odoo.exceptions import UserError
 
 
 class ProductTemplate(models.Model):
-
     _inherit = "product.template"
 
     state = fields.Char(
@@ -55,7 +54,7 @@ class ProductTemplate(models.Model):
         """The record param is for similar state field at product.product model."""
         ProductState = record.env["product.state"]
         product_state = ProductState.search([("code", "=", record.state)], limit=1)
-        if record.state and not product_state:
+        if record.state and not product_state and self.env.registry.ready:
             msg = _("The product state code %s could not be found.")
             raise UserError(msg % record.state)
         record.product_state_id = product_state.id
